@@ -1,0 +1,21 @@
+sqlite:
+  adapter: sqlite
+  database: vendor/plugins/sads_xml/test/db/sads_xml.sqlite.db
+
+sqlite3:
+  adapter: sqlite3
+  database: vendor/plugins/sads_xml/test/db/sads_xml.sqlite3.db
+
+postgresql:
+  adapter: postgresql
+  username:
+  password:
+  database: sads_xml_test
+  min_messages: ERROR
+
+mysql:
+  adapter: mysql
+  host: localhost
+  username: root
+  password:
+  database: sads_xml_test
