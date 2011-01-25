@@ -32,7 +32,7 @@ module SadsXml
     end
 
     def submit_page=(page_link)
-      page_link.gsub!(/^\/dpc_mobile\//, '') unless page_link.match(/\.html$/)
+      page_link.gsub!(/^\/movie_lookup_demo\//, '') unless page_link.match(/\.html$/)
       @submit_page = page_link
     end
 
@@ -40,7 +40,7 @@ module SadsXml
       counter = 0
       counter += @title.length + 2 unless @title.blank?
       counter += @message.length + 1 unless @message.blank?
-      counter += @sms_message.length + 1 unless @sms_message.blank?
+      #counter += @sms_message.length + 1 unless @sms_message.blank?
 
       @navigations.each do |key, links|
         links.each do |link|
@@ -68,7 +68,7 @@ module SadsXml
       @navigations[navigation_id] = [] if @navigations[navigation_id].nil?
 
       # workaround for SADS Absolute Path
-      link[:pageId].gsub!(/^\/dpc_mobile\//, '') unless link[:pageId].match(/\.html$/)
+      link[:pageId].gsub!(/^\/movie_lookup_demo\//, '') unless link[:pageId].match(/\.html$/)
 
       @navigations[navigation_id]<< link
     end
@@ -95,8 +95,14 @@ module SadsXml
 
         navigations.each do |key,links|
           if links.any?
-            xml.navigation :id => (key == :default ? nil : key.to_s) do
-              links.each do |link| xml.link link[:title], link.except(:title) end
+            if key == :default
+              xml.navigation do
+                links.each do |link| xml.link link[:title], link.except(:title) end
+              end
+            else
+              xml.navigation :id => key.to_s do
+                links.each do |link| xml.link link[:title], link.except(:title) end
+              end
             end
           end # eo if links.any?
 

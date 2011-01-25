@@ -78,7 +78,7 @@ class SadsXmlTest < ActiveSupport::TestCase
                   ('Shops'.length + "2".length + 2) - 1,
                  @sads.ussd_length
 
-    @sads = Sads.new
+    @sads = SadsXml::Sads.new
     @sads.title = "DPC Mobile: Search by Person"
     @sads.add_input :navigationId => 'submit', :name => 'person_name', :title => 'Please enter name of Person'
     @sads.submit_page = 'whatever_path'
