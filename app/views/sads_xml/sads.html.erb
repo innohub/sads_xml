@@ -1,0 +1,35 @@
+<h1><%= @sads.title %></h1>
+
+<hr />
+
+<% if not @sads.message.blank? %>
+  <div><%= raw @sads.message.gsub(/\r/, '<br />') %></div>
+<% end %>
+<% if not @sads.sms_message.blank? %>
+  <div><%= raw @sads.sms_message.gsub(/\r/, '<br />') %></div>
+<% end %>
+
+<hr />
+
+<% @sads.navigations.each do |key,links| %>
+  <div>
+    <h3><%= key.to_s %></h3>
+    <ul>
+      <% links.each do |link| %>
+        <li><%= link_to "#{link[:accesskey]} - #{link[:title]}", link[:pageId]  %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<hr />
+<% @sads.inputs.each do |input| %>
+  <% form_tag @sads.submit_page do |f| %>
+    <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
+    <%= submit_tag 'Submit' %>
+  <% end %>
+<% end %>
+
+<div style="background: green; color: #EEE; padding: 8px;">
+  <b>USSD Length:</b> <%= @sads.ussd_length %>
+</div>
