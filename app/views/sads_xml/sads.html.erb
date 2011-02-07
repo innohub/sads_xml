@@ -5,9 +5,6 @@
 <% if not @sads.message.blank? %>
   <div><%= raw @sads.message.gsub(/\r/, '<br />') %></div>
 <% end %>
-<% if not @sads.sms_message.blank? %>
-  <div><%= raw @sads.sms_message.gsub(/\r/, '<br />') %></div>
-<% end %>
 
 <hr />
 
@@ -20,6 +17,13 @@
       <% end %>
     </ul>
   </div>
+<% end %>
+
+<hr />
+
+<% if not @sads.sms_message.blank? %>
+  <h3>SMS</h3>
+  <div><%= raw @sads.sms_message.gsub(/\r/, '<br />') %></div>
 <% end %>
 
 <hr />

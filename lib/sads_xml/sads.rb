@@ -32,7 +32,7 @@ module SadsXml
     end
 
     def submit_page=(page_link)
-      page_link.gsub!(/^\/movie_lookup_demo\//, '') unless page_link.match(/\.html$/)
+      page_link.gsub!(/^\/dpc_mobile\//, '') unless page_link.match(/\.html$/)
       @submit_page = page_link
     end
 
@@ -68,7 +68,7 @@ module SadsXml
       @navigations[navigation_id] = [] if @navigations[navigation_id].nil?
 
       # workaround for SADS Absolute Path
-      link[:pageId].gsub!(/^\/movie_lookup_demo\//, '') unless link[:pageId].match(/\.html$/)
+      link[:pageId].gsub!(/^\/dpc_mobile\//, '') unless link[:pageId].match(/\.html$/)
 
       @navigations[navigation_id]<< link
     end
