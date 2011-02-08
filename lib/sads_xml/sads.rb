@@ -25,6 +25,12 @@ module SadsXml
   class Sads
     attr_accessor :title, :message, :navigations, :inputs, :submit_page, :sms_message
 
+    DEFAULTS = {
+      :navigation => {
+        :type => 'nav'
+      }
+    }
+
     def initialize
       @title = ''
       @inputs = []
@@ -70,7 +76,7 @@ module SadsXml
       # workaround for SADS Absolute Path
       link[:pageId].gsub!(/^\/dpc_mobile\//, '') unless link[:pageId].match(/\.html$/)
 
-      @navigations[navigation_id]<< link
+      @navigations[navigation_id]<< DEFAULTS[:navigation].merge(link)
     end
 
     def add_input(input)
