@@ -38,7 +38,7 @@ module SadsXml
 
       def respond_with_sads
         respond_to do |format|
-          format.html { render :action => 'sads_xml/sads' }
+          format.html { render :action => 'sads_xml/sads', :layout => 'sads_xml' }
           format.sads { render :xml => @sads.to_sads }
         end
       end
