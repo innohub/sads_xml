@@ -28,7 +28,7 @@
 
 <hr />
 <% @sads.inputs.each do |input| %>
-  <% form_tag @sads.submit_page do |f| %>
+  <%= form_tag @sads.submit_page do |f| %>
     <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
     <%= submit_tag 'Submit' %>
   <% end %>
