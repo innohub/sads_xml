@@ -118,16 +118,13 @@ module SadsXml
           end
         end
 
-        navigations.each do |key,links|
+        navigations.each do |key, links|
           if links.any?
-            if key == :default
-              xml.navigation do
-                links.each do |link| xml.link link[:title], link.except(:title) end
-              end
-            else
-              xml.navigation :id => key.to_s do
-                links.each do |link| xml.link link[:title], link.except(:title) end
-              end
+            object_hash = {}
+            object_hash[:id] = key.to_s unless key == :default
+
+            xml.navigation object_hash do
+              links.each do |link| xml.link link[:title], link.except(:title) end
             end
           end # eo if links.any?
 
