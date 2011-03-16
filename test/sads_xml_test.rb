@@ -71,13 +71,6 @@ class SadsXmlTest < ActiveSupport::TestCase
                   ('Shops'.length + "2".length + 2) - 1,
                  @sads.ussd_length
 
-    @sads.message = nil
-    assert_equal (title.length + 2) +
-                  ('Main Menu'.length + "00".length + 2) +
-                  ('Food'.length + "1".length + 2) + 
-                  ('Shops'.length + "2".length + 2) - 1,
-                 @sads.ussd_length
-
     @sads = SadsXml::Sads.new
     @sads.title = "DPC Mobile: Search by Person"
     @sads.add_input :navigationId => 'submit', :name => 'person_name', :title => 'Please enter name of Person'
@@ -85,4 +78,19 @@ class SadsXmlTest < ActiveSupport::TestCase
 
     assert_equal 58, @sads.ussd_length
   end
+
+  test "must be able to add messages" do
+    title = "This is title"
+    message = "This is a message"
+
+    @sads.title = title
+    @sads.message = message
+    @sads.set_message :bottom, "bottom message"
+
+    xml = @sads.to_sads
+
+    assert !xml.match(/<div id="bottom">bottom message<\/div>/).nil?
+    assert !xml.match(/<div>This is a message<\/div>/).nil?
+  end
+
 end

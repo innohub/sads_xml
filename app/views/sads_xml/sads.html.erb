@@ -2,8 +2,10 @@
 
 <hr />
 
-<% if not @sads.message.blank? %>
-  <div><%= raw @sads.message.gsub(/\r/, '<br />') %></div>
+<% @sads.messages.each do |key, message| %>
+  <% if key != :bottom %>
+    <div><%= raw message.gsub(/\r/, '<br />') %></div>
+  <% end %>
 <% end %>
 
 <hr />
@@ -17,6 +19,13 @@
       <% end %>
     </ul>
   </div>
+<% end %>
+
+<hr />
+
+<% unless @sads.messages[:bottom].nil? %>
+  <% message = @sads.messages[:bottom] %>
+  <div><%= raw message.gsub(/\r/, '<br />') %></div>
 <% end %>
 
 <hr />

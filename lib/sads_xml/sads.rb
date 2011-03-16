@@ -23,7 +23,7 @@ require 'builder'
 
 module SadsXml
   class Sads
-    attr_accessor :title, :message, :navigations, :inputs, :submit_page, :sms_message
+    attr_accessor :title, :messages, :navigations, :inputs, :submit_page, :sms_message
 
     DEFAULTS = {
       :navigation => {
@@ -35,6 +35,11 @@ module SadsXml
       @title = ''
       @inputs = []
       @navigations = { :default => [] }
+      @messages = {}
+    end
+
+    def message=(message)
+      self.set_message(:default, message)
     end
 
     def submit_page=(page_link)
@@ -46,8 +51,10 @@ module SadsXml
     def ussd_length
       counter = 0
       counter += @title.length + 2 unless @title.blank?
-      counter += @message.length + 1 unless @message.blank?
-      #counter += @sms_message.length + 1 unless @sms_message.blank?
+
+      @messages.each do |key, message|
+        counter += message.length + 1 unless message.blank?
+      end
 
       @navigations.each do |key, links|
         links.each do |link|
@@ -80,6 +87,10 @@ module SadsXml
       @navigations[navigation_id]<< DEFAULTS[:navigation].merge(link)
     end
 
+    def set_message(id, message)
+      @messages[id.to_sym] = message
+    end
+
     def add_input(input)
       @inputs<< input
     end
@@ -89,7 +100,14 @@ module SadsXml
       xml.instruct!
       xml.page :version => "2.0", "xmlns:meta" => "http://whoisd.eyeline.com/sads/meta" do
         xml.title @title, :id => ''
-        xml.div @message unless message.blank?
+
+        @messages.each do |key, message|
+          object = {}
+          object[:id] = key.to_s unless key == :default
+
+          xml.div message, object
+        end
+
         xml.div @sms_message, :type => 'sms' unless sms_message.blank?
 
         if @inputs.any?
