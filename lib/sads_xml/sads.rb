@@ -102,10 +102,10 @@ module SadsXml
         xml.title @title, :id => ''
 
         @messages.each do |key, message|
-          object = {}
-          object[:id] = key.to_s unless key == :default
+          object_hash = {}
+          object_hash[:id] = key.to_s unless key == :default
 
-          xml.div message, object
+          xml.div message, object_hash
         end
 
         xml.div @sms_message, :type => 'sms' unless sms_message.blank?
