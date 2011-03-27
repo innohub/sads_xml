@@ -33,6 +33,13 @@ module SadsXml
           logger.info "  WHOISD: #{@whoisd.inspect}"
         end
 
+        # The code below tries to emulate a SADS request
+        # this assumes that both are blank
+        if params[:format] == 'html'
+          params[:abonent] = '639990000000' if params[:abonent].nil?
+          params[:protocol] = 'ussd' if params[:protocol].nil?
+        end
+
         @sads = Sads.new
       end
 
