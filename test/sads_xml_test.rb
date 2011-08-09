@@ -93,4 +93,16 @@ class SadsXmlTest < ActiveSupport::TestCase
     assert !xml.match(/<div>This is a message<\/div>/).nil?
   end
 
+  test "must not render banners if banner_targets is empty" do
+    xml = @sads.to_sads
+    assert xml.match(/<meta:banner/).nil?
+  end
+
+  test "must render banners if banner_targets is not empty" do
+    @sads.banner_targets<< "female"
+    xml = @sads.to_sads
+    assert !xml.match(/<meta:banner target="female"\/>/).nil?
+  end
+
+
 end
