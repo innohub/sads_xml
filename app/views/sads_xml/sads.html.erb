@@ -2,6 +2,12 @@
 
 <hr />
 
+<% if @sads.banner_position == :top and @sads.banner_targets.any? %>
+  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
+<% end %>
+
+<hr />
+
 <% @sads.messages.each do |key, message| %>
   <% if key != :bottom %>
     <div><%= raw message.gsub(/\r/, '<br />') %></div>
@@ -57,6 +63,11 @@
     <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
     <%= submit_tag 'Submit' %>
   <% end %>
+<% end %>
+
+<% if @sads.banner_position == :bottom and @sads.banner_targets.any? %>
+  <hr />
+  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
 <% end %>
 
 <div style="background: green; color: #EEE; padding: 8px;">
