@@ -1,25 +1,65 @@
-<h1><%= @sads.title %></h1>
+<style type="text/css">
+  #ussd-info {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    font-family: verdana;
+    background: green;
+    color: white;
+  }
 
-<hr />
+  #screen {
+    font-family: Menlo, Monaco, Consolas, Monospace;
+    font-size: 1em;
+    width: 360px;
+    background: #AAA;
+    padding: 8px;
+    float: left;
+  }
 
-<% if @sads.banner_position == :top and @sads.banner_targets.any? %>
-  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
-<% end %>
+  #sms {
+    font-family: Menlo, Monaco, Consolas, Monospace;
+    font-size: 1em;
+    width: 360px;
+    padding: 8px;
+    float: left;
+    float: left;
+    background: #DDD;
+  }
 
-<hr />
+  .clear { clear: both; }
+</style>
 
-<% @sads.messages.each do |key, message| %>
-  <% if key != :bottom %>
-    <div><%= raw message.gsub(/\r/, '<br />') %></div>
-  <% end %>
-<% end %>
+<div id="ussd-info">
+  <table>
+    <tr>
+      <th>Length</th>
+      <th>Pages</th>
+    </tr>
+    <tr>
+      <td><%= @sads.ussd_length %></td>
+      <td>Not Implemented</td>
+    </tr>
+  </table>
+</div>
 
-<hr />
+<div id="phone-viewport">
+  <div id="screen">
+    <%= @sads.title %>:
+    <br />
 
-<% @sads.navigations.each do |key,links| %>
-  <div>
-    <h3><%= key.to_s %></h3>
-    <ul>
+    <% if @sads.banner_position == :top and @sads.banner_targets.any? -%>
+      {Ad=[<%= @sads.banner_targets.join(',') %>]}
+      <br />
+    <% end -%>
+
+    <% @sads.messages.each do |key, message| -%>
+      <% if key != :bottom -%>
+        <%= raw message.gsub(/\r/, '<br />') -%>
+        <br />
+      <% end -%>
+    <% end -%>
+    <% @sads.navigations.each do |key,links| %>
       <% links.each do |link| %>
 
         <% link[:pageId] = link[:pageId] %>
@@ -29,47 +69,24 @@
           <% link[:pageId] += "?abonent=#{CGI.escape(params[:abonent])}" %>
         <% end %>
 
-        <li><%= link_to "#{link[:accesskey]} - #{link[:title]}", link[:pageId] %></li>
+        <%= link_to raw("#{link[:accesskey]}&gt;#{link[:title]}"), link[:pageId] %>
+        <br />
       <% end %>
-    </ul>
+    <% end %>
+    <% @sads.messages.each do |key, message| %>
+      <% if key == :bottom %>
+        <%= raw message.gsub(/\r/, '<br />') %>
+        <br />
+      <% end %>
+    <% end %>
+    <% if @sads.banner_position == :bottom and @sads.banner_targets.any? %>
+      {Ad=[<%= @sads.banner_targets.join(',') %>]}
+    <% end %>
   </div>
-<% end %>
-
-<hr />
-
-<% unless @sads.messages[:bottom].nil? %>
-  <% message = @sads.messages[:bottom] %>
-  <div><%= raw message.gsub(/\r/, '<br />') %></div>
-<% end %>
-
-<hr />
-
-<% if not @sads.sms_message.blank? %>
-  <h3>SMS</h3>
-  <div><%= raw @sads.sms_message.gsub(/\r/, '<br />') %></div>
-<% end %>
-
-<hr />
-<% @sads.inputs.each do |input| %>
-
-  <% submit_page = @sads.submit_page %>
-  <% if submit_page.index("?") %>
-    <% submit_page.sub!("?", "?abonent=#{CGI.escape(params[:abonent])}&") %>
-  <% else %>
-    <% submit_page += "?abonent=#{CGI.escape(params[:abonent])}" %>
-  <% end %>
-
-  <%= form_tag submit_page do |f| %>
-    <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
-    <%= submit_tag 'Submit' %>
-  <% end %>
-<% end %>
-
-<% if @sads.banner_position == :bottom and @sads.banner_targets.any? %>
-  <hr />
-  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
-<% end %>
-
-<div style="background: green; color: #EEE; padding: 8px;">
-  <b>USSD Length:</b> <%= @sads.ussd_length %>
+  <div id="sms">
+    <% if not @sads.sms_message.blank? %>
+      <%= raw @sads.sms_message.gsub(/\r/, '<br />') %>
+    <% end %>
+  </div>
+  <div class="clear"></div>
 </div>
