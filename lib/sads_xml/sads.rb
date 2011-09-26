@@ -23,7 +23,8 @@ require 'builder'
 
 module SadsXml
   class Sads
-    attr_accessor :title, :messages, :navigations, :inputs, :submit_page, :sms_message
+    attr_accessor :title, :messages, :navigations, :inputs, :submit_page, :sms_message,
+      :banner_targets, :banner_position
 
     DEFAULTS = {
       :navigation => {
@@ -36,6 +37,8 @@ module SadsXml
       @inputs = []
       @navigations = { :default => [] }
       @messages = {}
+      @banner_targets = []
+      @banner_position = :top
     end
 
     def message=(message)
@@ -101,6 +104,10 @@ module SadsXml
       xml.page :version => "2.0", "xmlns:meta" => "http://whoisd.eyeline.com/sads/meta" do
         xml.title @title, :id => ''
 
+        if @banner_position == :top and @banner_targets.any?
+          xml.meta :banner, :target => @banner_targets.join(',')
+        end
+
         @messages.each do |key, message|
           object_hash = {}
           object_hash[:id] = key.to_s unless key == :default
@@ -133,6 +140,10 @@ module SadsXml
               xml.link :accesskey => '1', :pageId => @submit_page
             end
           end
+        end
+
+        if @banner_position == :bottom and @banner_targets.any?
+          xml.meta :banner, :target => @banner_targets.join(',')
         end
       end
     end

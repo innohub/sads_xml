@@ -2,6 +2,12 @@
 
 <hr />
 
+<% if @sads.banner_position == :top and @sads.banner_targets.any? %>
+  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
+<% end %>
+
+<hr />
+
 <% @sads.messages.each do |key, message| %>
   <% if key != :bottom %>
     <div><%= raw message.gsub(/\r/, '<br />') %></div>
@@ -15,7 +21,15 @@
     <h3><%= key.to_s %></h3>
     <ul>
       <% links.each do |link| %>
-        <li><%= link_to "#{link[:accesskey]} - #{link[:title]}", link[:pageId]  %></li>
+
+        <% link[:pageId] = link[:pageId] %>
+        <% if link[:pageId].index("?") %>
+          <% link[:pageId].sub!("?", "?abonent=#{CGI.escape(params[:abonent])}&") %>
+        <% else %>
+          <% link[:pageId] += "?abonent=#{CGI.escape(params[:abonent])}" %>
+        <% end %>
+
+        <li><%= link_to "#{link[:accesskey]} - #{link[:title]}", link[:pageId] %></li>
       <% end %>
     </ul>
   </div>
@@ -37,10 +51,23 @@
 
 <hr />
 <% @sads.inputs.each do |input| %>
-  <%= form_tag @sads.submit_page do |f| %>
+
+  <% submit_page = @sads.submit_page %>
+  <% if submit_page.index("?") %>
+    <% submit_page.sub!("?", "?abonent=#{CGI.escape(params[:abonent])}&") %>
+  <% else %>
+    <% submit_page += "?abonent=#{CGI.escape(params[:abonent])}" %>
+  <% end %>
+
+  <%= form_tag submit_page do |f| %>
     <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
     <%= submit_tag 'Submit' %>
   <% end %>
+<% end %>
+
+<% if @sads.banner_position == :bottom and @sads.banner_targets.any? %>
+  <hr />
+  [SharpAds::Banner Targets=[<%= @sads.banner_targets.join(',') %>]]
 <% end %>
 
 <div style="background: green; color: #EEE; padding: 8px;">
