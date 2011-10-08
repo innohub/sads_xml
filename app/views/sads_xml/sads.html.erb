@@ -27,6 +27,15 @@
     background: #DDD;
   }
 
+  #forms {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    font-family: verdana;
+    background: green;
+    color: white;
+  }
+
   .clear { clear: both; }
 </style>
 
@@ -81,6 +90,11 @@
         <br />
       <% end %>
     <% end %>
+
+    <% @sads.inputs.each do |input| %>
+      <%= input[:title] %>&gt;<br />
+    <% end %>
+
     <% if @sads.banner_position == :bottom and @sads.banner_targets.any? %>
       {Ad=[<%= @sads.banner_targets.join(',') %>]}
     <% end %>
@@ -91,4 +105,22 @@
     <% end %>
   </div>
   <div class="clear"></div>
+
+  <div id="forms">
+    Emulated (Not shown on Phone)
+    <% @sads.inputs.each do |input| %>
+      <% submit_page = @sads.submit_page %>
+      <% if submit_page.index("?") %>
+        <% submit_page.sub!("?", "?abonent=#{CGI.escape(params[:abonent])}&") %>
+      <% else %>
+        <% submit_page += "?abonent=#{CGI.escape(params[:abonent])}" %>
+      <% end %>
+
+      <%= form_tag submit_page do |f| %>
+        <label><%= input[:title] %>:</label> <%= text_field_tag input[:name], '' %>
+        <%= submit_tag 'Submit' %>
+      <% end %>
+      <hr />
+    <% end %>
+  </div>
 </div>
