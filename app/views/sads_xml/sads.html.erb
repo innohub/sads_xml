@@ -45,8 +45,10 @@
 
 <div id="phone-viewport">
   <div id="screen">
-    <%= @sads.title %>:
-    <br />
+    <% unless @sads.title.blank? %>
+      <%= @sads.title %>:
+      <br />
+    <% end %>
 
     <% if @sads.banner_position == :top and @sads.banner_targets.any? -%>
       {Ad=[<%= @sads.banner_targets.join(',') %>]}
