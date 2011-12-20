@@ -24,7 +24,7 @@ require 'builder'
 module SadsXml
   class Sads
     attr_accessor :title, :messages, :navigations, :inputs, :submit_page, :sms_message,
-      :banner_targets, :banner_position
+      :banner_targets, :banner_position, :request_attributes
 
     DEFAULTS = {
       :navigation => {
@@ -39,6 +39,7 @@ module SadsXml
       @messages = {}
       @banner_targets = []
       @banner_position = :top
+      @request_attributes = []
     end
 
     def message=(message)
@@ -90,6 +91,10 @@ module SadsXml
       @navigations[navigation_id]<< DEFAULTS[:navigation].merge(link)
     end
 
+    def add_attribute(req_attribute)
+      @request_attributes<< req_attribute
+    end
+
     def set_message(id, message)
       @messages[id.to_sym] = message
     end
@@ -139,6 +144,12 @@ module SadsXml
             xml.navigation :id => 'submit' do
               xml.link :accesskey => '1', :pageId => @submit_page
             end
+          end
+        end
+
+        if @request_attributes.any?
+          @request_attributes.each do |attribute|
+            xml.attribute attribute
           end
         end
 
