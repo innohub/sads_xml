@@ -148,8 +148,10 @@ module SadsXml
         end
 
         if @request_attributes.any?
-          @request_attributes.each do |attribute|
-            xml.attribute attribute
+          xml.attributes do
+            @request_attributes.each do |attribute|
+              xml.attribute attribute
+            end
           end
         end
 
