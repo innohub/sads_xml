@@ -136,7 +136,7 @@ module SadsXml
             object_hash[:id] = key.to_s unless key == :default
 
             xml.navigation object_hash do
-              links.each do |link| xml.link link[:title], link.except(:title) end
+              links.each do |link| xml.link link[:title].strip, link.except(:title) end
             end
           end # eo if links.any?
 
