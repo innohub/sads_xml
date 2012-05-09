@@ -1,0 +1,2 @@
+module Ussd::DefaultHelper
+end
