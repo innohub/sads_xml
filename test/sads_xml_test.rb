@@ -104,5 +104,11 @@ class SadsXmlTest < ActiveSupport::TestCase
     assert !xml.match(/<meta:banner target="female"\/>/).nil?
   end
 
+  test "must render banners within a div" do
+    @sads.banner_targets<< ""
+    xml = @sads.to_sads
+    assert xml.match(/<meta:banner target="female"\/><\/div>/).nil?
+  end
+
 
 end

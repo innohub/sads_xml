@@ -110,7 +110,9 @@ module SadsXml
         xml.title @title, :id => ''
 
         if @banner_position == :top and @banner_targets.any?
-          xml.meta :banner, :target => @banner_targets.join(',')
+          xml.div :id => :top do
+            xml.meta :banner, :target => @banner_targets.join(',')
+          end
         end
 
         @messages.each do |key, message|
@@ -156,7 +158,9 @@ module SadsXml
         end
 
         if @banner_position == :bottom and @banner_targets.any?
-          xml.meta :banner, :target => @banner_targets.join(',')
+          xml.div :id => :bottom do
+            xml.meta :banner, :target => @banner_targets.join(',')
+          end
         end
       end
     end
