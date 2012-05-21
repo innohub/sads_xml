@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sads_xml (0.0.1)
+    sads_xml (0.0.2)
       rails (~> 3.2.3)
 
 GEM
