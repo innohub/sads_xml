@@ -36,9 +36,9 @@ module SadsXml
       @title = ''
       @inputs = []
       @navigations = { :default => [] }
-      @messages = {}
+      @messages = { :top => '', :bottom => '' }
       @banner_targets = []
-      @banner_position = :top
+      @banner_position = :bottom
       @request_attributes = []
     end
 
@@ -109,17 +109,18 @@ module SadsXml
       xml.page :version => "2.0", "xmlns:meta" => "http://whoisd.eyeline.com/sads/meta" do
         xml.title @title, :id => ''
 
-        if @banner_position == :top and @banner_targets.any?
-          xml.div :id => :top do
-            xml.meta :banner, :target => @banner_targets.join(',')
-          end
-        end
-
         @messages.each do |key, message|
           object_hash = {}
           object_hash[:id] = key.to_s unless key == :default
 
-          xml.div message, object_hash
+          xml.div object_hash do
+            xml.div message unless message.blank?
+            if @banner_position.to_s == key.to_s and @banner_targets.any?
+              xml.br
+              xml.br unless message.blank?
+              xml.meta :banner, :target => @banner_targets.join(',') 
+            end
+          end
         end
 
         xml.div @sms_message, :type => 'sms' unless sms_message.blank?
@@ -154,12 +155,6 @@ module SadsXml
             @request_attributes.each do |attribute|
               xml.attribute attribute
             end
-          end
-        end
-
-        if @banner_position == :bottom and @banner_targets.any?
-          xml.div :id => :bottom do
-            xml.meta :banner, :target => @banner_targets.join(',')
           end
         end
       end

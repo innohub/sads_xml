@@ -89,7 +89,7 @@ class SadsXmlTest < ActiveSupport::TestCase
 
     xml = @sads.to_sads
 
-    assert !xml.match(/<div id="bottom">bottom message<\/div>/).nil?
+    assert !xml.match(/bottom message/).nil?
     assert !xml.match(/<div>This is a message<\/div>/).nil?
   end
 
@@ -110,5 +110,54 @@ class SadsXmlTest < ActiveSupport::TestCase
     assert xml.match(/<meta:banner target="female"\/><\/div>/).nil?
   end
 
+  test "must render bottom div only once" do
+    @sads.set_message :bottom, "bottom message"
+    @sads.banner_position = :bottom
+    @sads.banner_targets<< ""
 
+    xml = @sads.to_sads
+
+    assert_equal 1, xml.scan(/<div id="bottom">/).size
+  end
+
+  test "must render top div only once" do
+    @sads.set_message :top, "top message"
+    @sads.banner_position = :top
+    @sads.banner_targets<< ""
+
+    xml = @sads.to_sads
+
+    assert_equal 1, xml.scan(/<div id="top">/).size
+  end
+
+  test "must render br before banner when message for that position is available" do
+    @sads.set_message :top, "top message"
+    @sads.banner_position = :top
+    @sads.banner_targets<< ""
+    xml = @sads.to_sads
+
+    assert !xml.match(/<br\/><br\/><meta:banner target=""\/>/).nil?
+  end
+
+  test "must render br before banner when message for that position is available (bottom)" do
+    @sads.message = "This is the main content of the whole page."
+    @sads.set_message :bottom, "bottom message"
+    @sads.banner_position = :bottom
+    @sads.banner_targets<< ""
+    xml = @sads.to_sads
+
+    puts xml
+
+    assert !xml.match(/<br\/><br\/><meta:banner target=""\/>/).nil?
+  end
+
+  test "must not render (double) br before banner if message for that position is not avaialble" do
+    @sads.message = "message"
+    @sads.banner_position = :bottom
+    @sads.banner_targets<< ""
+    xml = @sads.to_sads
+
+    assert xml.match(/<br\/><br\/><meta:banner target=""\/>/).nil?
+    assert !xml.match(/<br\/><meta:banner target=""\/>/).nil?
+  end
 end
