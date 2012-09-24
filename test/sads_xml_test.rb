@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'test_helper'
 
 class SadsXmlTest < ActiveSupport::TestCase
@@ -146,8 +148,6 @@ class SadsXmlTest < ActiveSupport::TestCase
     @sads.banner_targets<< ""
     xml = @sads.to_sads
 
-    puts xml
-
     assert !xml.match(/<br\/><br\/><meta:banner target=""\/>/).nil?
   end
 
@@ -160,4 +160,28 @@ class SadsXmlTest < ActiveSupport::TestCase
     assert xml.match(/<br\/><br\/><meta:banner target=""\/>/).nil?
     assert !xml.match(/<br\/><meta:banner target=""\/>/).nil?
   end
+
+  test "must escape accented latin characters to ascii if sanitized" do
+    @sads.sanitize = true
+    @sads.title = "CôõǒÔỌṺüleñÑ"
+    @sads.message = "ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ"
+    @sads.add_navigation({ :title => 'Föȯd', :accesskey => '1', :pageId => '/food' }, :categories)
+    xml = @sads.to_sads
+
+    assert !@sads.to_sads.match(/<title id="">CoooOOUulenN<\/title>/).nil?
+    assert !xml.match(/<div>AAAAAAAAAAAAAAAAAAAAAAAAAAAAA<\/div>/).nil?
+    assert !xml.match(/Food<\/link>/).nil?
+  end
+
+  test "must not escape latin characters to ascii by default" do
+    @sads.title = "CôõǒÔỌṺüleñÑ"
+    @sads.message = "ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ"
+    @sads.add_navigation({ :title => 'Föȯd', :accesskey => '1', :pageId => '/food' }, :categories)
+    xml = @sads.to_sads
+
+    assert !@sads.to_sads.match(/<title id="">CôõǒÔỌṺüleñÑ<\/title>/).nil?
+    assert !xml.match(/<div>ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ<\/div>/).nil?
+    assert !xml.match(/Föȯd<\/link>/).nil?
+  end
+
 end

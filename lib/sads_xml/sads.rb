@@ -24,7 +24,7 @@ require 'builder'
 module SadsXml
   class Sads
     attr_accessor :title, :messages, :navigations, :inputs, :submit_page, :sms_message,
-      :banner_targets, :banner_position, :request_attributes
+      :banner_targets, :banner_position, :request_attributes, :sanitize
 
     DEFAULTS = {
       :navigation => {
@@ -33,6 +33,7 @@ module SadsXml
     }
 
     def initialize
+      @sanitize = false
       @title = ''
       @inputs = []
       @navigations = { :default => [] }
@@ -103,18 +104,23 @@ module SadsXml
       @inputs<< input
     end
 
+    def sanitize(text)
+      return text.to_ascii if @sanitize
+      return text
+    end
+
     def to_sads
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.page :version => "2.0", "xmlns:meta" => "http://whoisd.eyeline.com/sads/meta" do
-        xml.title @title, :id => ''
+        xml.title sanitize(@title), :id => ''
 
         @messages.each do |key, message|
           object_hash = {}
           object_hash[:id] = key.to_s unless key == :default
 
           xml.div object_hash do
-            xml.div message unless message.blank?
+            xml.div sanitize(message) unless message.blank?
             if @banner_position.to_s == key.to_s and @banner_targets.any?
               xml.br
               xml.br unless message.blank?
@@ -123,7 +129,7 @@ module SadsXml
           end
         end
 
-        xml.div @sms_message, :type => 'sms' unless sms_message.blank?
+        xml.div sanitize(@sms_message), :type => 'sms' unless sms_message.blank?
 
         if @inputs.any?
           xml.div do
@@ -139,7 +145,7 @@ module SadsXml
             object_hash[:id] = key.to_s unless key == :default
 
             xml.navigation object_hash do
-              links.each do |link| xml.link link[:title].strip, link.except(:title) end
+              links.each do |link| xml.link sanitize(link[:title].strip), link.except(:title) end
             end
           end # eo if links.any?
 

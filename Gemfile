@@ -2,6 +2,8 @@ source "http://rubygems.org"
 
 gemspec
 
+gem 'stringex'
+
 # Used by test/dummy app
 gem "jquery-rails"
 
