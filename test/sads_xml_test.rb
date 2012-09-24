@@ -164,12 +164,12 @@ class SadsXmlTest < ActiveSupport::TestCase
   test "must escape accented latin characters to ascii if sanitized" do
     @sads.sanitize = true
     @sads.title = "CôõǒÔỌṺüleñÑ"
-    @sads.message = "ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ"
+    @sads.message = "ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ“”‘’"
     @sads.add_navigation({ :title => 'Föȯd', :accesskey => '1', :pageId => '/food' }, :categories)
     xml = @sads.to_sads
 
     assert !@sads.to_sads.match(/<title id="">CoooOOUulenN<\/title>/).nil?
-    assert !xml.match(/<div>AAAAAAAAAAAAAAAAAAAAAAAAAAAAA<\/div>/).nil?
+    assert !xml.match(/<div>AAAAAAAAAAAAAAAAAAAAAAAAAAAAA""''<\/div>/).nil?
     assert !xml.match(/Food<\/link>/).nil?
   end
 
