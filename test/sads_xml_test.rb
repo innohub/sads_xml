@@ -184,4 +184,10 @@ class SadsXmlTest < ActiveSupport::TestCase
     assert !xml.match(/Föȯd<\/link>/).nil?
   end
 
+  test "must replace new line characters with breaks" do
+    @sads.message = "ABC\nDEF\nGHI"
+    xml = @sads.to_sads
+    assert !@sads.to_sads.match(/<div>ABC<br\/>DEF<br\/>GHI<\/div>/).nil?
+  end
+
 end

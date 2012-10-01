@@ -120,7 +120,15 @@ module SadsXml
           object_hash[:id] = key.to_s unless key == :default
 
           xml.div object_hash do
-            xml.div sanitize(message) unless message.blank?
+            unless message.blank?
+              xml.div do
+                lines = sanitize(message).split("\n").reverse
+                while line = lines.pop
+                  xml.text! line
+                  xml.br if lines.any?
+                end
+              end
+            end
             if @banner_position.to_s == key.to_s and @banner_targets.any?
               xml.br
               xml.br unless message.blank?
